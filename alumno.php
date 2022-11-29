@@ -67,23 +67,24 @@ abstract class Alumno {
 
     // leerDatos
     public function imprimirDatos () {
-        echo "-------------------\n";
-        echo "ID: " . $this->id . "\n";
-        echo "apellido: " . $this->apellido. "\n";
-        echo "materia: " . $this->materia . "\n";
-        echo "nota: " . $this->nota . "\n";
+
+        $impresion = "//------------------\n".
+        "\tID: " . $this->id . "\n".
+        "\tApellido: " . $this->apellido. "\n".
+        "\tMateria: " . $this->materia . "\n".
+        "\tNota: " . $this->nota . "\n";
+        return $impresion;
 
     }
 
-    public function imprimirErrores() {
-        echo "Errores: \n";
-        if (empty($this->errores)){
-            echo "Alumno Válido\n";
-        } else {
-            foreach ($this->errores as $error) {
-                echo "- " . $error . "\n";
-            }
-        }
-        echo "-----------------\n";
-    }
+    // public function imprimirErrores() {
+    //     echo "Errores: \n";
+    //     if (empty($this->errores)){
+    //         echo "\tAlumno Válido\n";
+    //     } else {
+    //         foreach ($this->errores as $error) {
+    //             echo "\t" . $error . "\n";
+    //         }
+    //     }
+    // }
 }

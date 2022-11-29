@@ -52,12 +52,15 @@ class Menu {
 
     private function listarDatos($datosEjercicio){
         // pedir el apellido a buscar
-        Utiles::verDatos($datosEjercicio);
+        foreach($datosEjercicio as $alumno){
+            Utiles::informarUsuario("ID: {$alumno->id()}\n");
+            Utiles::informarUsuario("Apellido: {$alumno->apellido()}\n\n");
+        }
         $mostrar = Utiles::pedirInformacion("Apellido del alumno:");
 
         foreach($datosEjercicio as $alumno){
             if ($mostrar == $alumno->apellido() || empty($mostrar)){
-                $alumno->imprimirDatos();
+                Utiles::informarUsuario($alumno->imprimirDatos());
             } 
         }
     }
@@ -99,7 +102,10 @@ class Menu {
 
 
     private function borrarDatos($datosEjercicio, &$errores){
-        Utiles::verDatos($datosEjercicio);
+        foreach($datosEjercicio as $alumno){
+            Utiles::informarUsuario('ID: {$alumno->id()}\n');
+            Utiles::informarUsuario('Apellido: {$alumno->apellido()}\n\n');
+        }
         $borrar = Utiles::pedirInformacion("Elija el ID del alumno a borrar \n");
         if(array_key_exists($borrar, $datosEjercicio)){
             echo "Borrar: " . $borrar ."\n";
@@ -114,7 +120,11 @@ class Menu {
 
     private function modificarDatos($datosEjercicio, &$errores){
 
-        Utiles::verDatos($datosEjercicio);
+        foreach($datosEjercicio as $alumno){
+            Utiles::informarUsuario("ID: {$alumno->id()}\n");
+            Utiles::informarUsuario("Apellido: {$alumno->apellido()}\n\n");
+        }
+        
         $modificar = Utiles::pedirInformacion("Indique ID del alumno a modificar:");
         if(array_key_exists($modificar, $datosEjercicio)){
             $alumnoModificado = $this->pedirDatosAlumno();

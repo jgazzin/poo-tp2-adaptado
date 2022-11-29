@@ -31,7 +31,7 @@ class AlumnoRegular extends Alumno {
 
     public function aprobo(){
         if (!empty($this->nota)){
-            if ($this->nota >6) {
+            if ($this->nota >=6) {
                 return "SI";
             } else {
                 return "NO";
@@ -40,11 +40,13 @@ class AlumnoRegular extends Alumno {
     }
 
     public function imprimirDatos (){
-        parent::imprimirDatos();
-        echo "Aprobo: " . $this->aprobo() . "\n";
-        echo "Alumno regular".PHP_EOL;
-        echo "año regularidad: " . $this->anioRegularidad . "\n";
-        parent::imprimirErrores();
+        $impresion = parent::imprimirDatos() .
+        "\tAprobo: " . $this->aprobo() . "\n".
+        "\tAlumno regular".PHP_EOL.
+        "\taño regularidad: " . $this->anioRegularidad . "\n";
+        //parent::imprimirErrores();
+
+        return $impresion;
     }    
 
 }

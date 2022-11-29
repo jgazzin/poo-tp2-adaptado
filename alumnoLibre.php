@@ -12,7 +12,7 @@ class AlumnoLibre extends Alumno {
 
     public function aprobo(){
         if (!empty($this->nota)){
-            if ($this->nota >4) {
+            if ($this->nota >=4) {
                 return "SI";
             } else {
                 return "NO";
@@ -22,10 +22,12 @@ class AlumnoLibre extends Alumno {
     } 
 
     public function imprimirDatos (){
-        parent::imprimirDatos();
-        echo "Aprobo: " . $this->aprobo() . "\n";
-        echo "Alumno Libre".PHP_EOL;
-        parent::imprimirErrores();
+        $impresion = parent::imprimirDatos(). "\n".
+        "\tAprobo: " . $this->aprobo() . "\n".
+        "\tAlumno Libre".PHP_EOL;
+        //parent::imprimirErrores();
+
+        return $impresion;
     }  
 
 }

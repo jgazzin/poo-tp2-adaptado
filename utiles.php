@@ -12,20 +12,23 @@ class Utiles {
         return $entradaUsuario;
     }
 
-    public static function mostrarDatos($datosEjercicio) {
-        echo "Total Alumnos: ". count($datosEjercicio) . "\n";
-        foreach($datosEjercicio as $alumno){
-            echo $alumno->imprimirDatos();
-        }
-    }
+    // public static function mostrarDatos($datosEjercicio) {
+    //     echo "Total Alumnos: ". count($datosEjercicio) . "\n";
+    //     foreach($datosEjercicio as $alumno){
+    //         echo $alumno->imprimirDatos();
+    //     }
+    // }
 
-    public static function verDatos($datosEjercicio) {
-        echo "Total Alumnos: ". count($datosEjercicio) . "\n";
-        foreach($datosEjercicio as $alumno){
-            echo "ID: {$alumno->id()}\n";
-            echo "Apellido: {$alumno->apellido()}\n";
-            echo "----------------\n";
-        }
+    // public static function verDatos($datosEjercicio) {
+    //     echo "Total Alumnos: ". count($datosEjercicio) . "\n";
+    //     foreach($datosEjercicio as $alumno){
+    //         Utiles::informarUsuario("ID: {$alumno->id()}\n");
+    //         Utiles::informarUsuario("Apellido: {$alumno->apellido()}\n\n");
+    //     }
+    // }
+
+    public static function informarUsuario($mensaje) {
+        echo $mensaje;
     }
 
 }

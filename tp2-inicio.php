@@ -24,7 +24,7 @@ $arrayObjetos = [
     $pk4=>$alDemo4
 ];
 
-var_dump($arrayObjetos);
+// var_dump($arrayObjetos);
 
 $baseArray = new BaseArray($arrayObjetos);
 $ejercicio = new Ejercicio($baseArray);

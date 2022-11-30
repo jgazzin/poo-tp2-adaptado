@@ -78,14 +78,4 @@ abstract class Alumno {
 
     }
 
-    // public function imprimirErrores() {
-    //     echo "Errores: \n";
-    //     if (empty($this->errores)){
-    //         echo "\tAlumno Válido\n";
-    //     } else {
-    //         foreach ($this->errores as $error) {
-    //             echo "\t" . $error . "\n";
-    //         }
-    //     }
-    // }
 }

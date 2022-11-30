@@ -4,8 +4,8 @@ require_once "./utiles.php";
 require_once "./alumnoLibre.php";
 require_once "./alumnoRegular.php";
 
-require_once "./interfaceDatos.php";
-require_once "./baseArray.php";
+require_once "interfaceDatos.php";
+require_once "baseArray.php";
 
 class Menu {
     private $opciones = [
@@ -64,20 +64,27 @@ class Menu {
         }
     }
 
-    private function listarDatos(IDatos $baseDatos){
-        $mostrar = Utiles::pedirInformacion('Ingrese un apellido o presione ENTER para todos', false);
+    // ver solo ID y Apellido
+    private function verIniciales(IDatos $baseDatos){
+        $cargarTodos = $baseDatos->buscarPorApellido();
+        foreach($cargarTodos as $alumno){
+            Utiles::informarUsuario("ID: ".$alumno->getId()."\n");
+            Utiles::informarUsuario("Apellido: ".$alumno->getApellido()."\n\n");
 
+        }
+    }
+
+    private function listarDatos(IDatos $baseDatos){
+        $mostrar = Utiles::pedirInformacion('Ingrese un apellido o presione ENTER para ver todos');
         // busco alumno por apellido o todos si mostrar = vacío
         $resultado =  $baseDatos->buscarPorApellido($mostrar);
         foreach($resultado as $alumno){
             Utiles::informarUsuario($alumno->imprimirDatos());
 
         }
-
     }
 
     private function cargarDatos(IDatos $baseDatos, &$errores){
-
         $nuevoAlumno = $this->pedirDatosAlumno();
         // contando los errores puedo saber si es válido
         if(count($nuevoAlumno->getErrores())===0){
@@ -100,7 +107,7 @@ class Menu {
             }
         }else {
             // envío alumno
-            $pk = $alumno->getPk();
+            $pk = $alumno->getId();
         }
 
         $apellido = Utiles::pedirInformacion("Ingrese apellido del alumno:");
@@ -120,11 +127,9 @@ class Menu {
 
 
     private function borrarDatos(IDatos $baseDatos, &$errores){
-        foreach($baseDatos as $alumno){
-            Utiles::informarUsuario('ID: {$alumno->id()}\n');
-            Utiles::informarUsuario('Apellido: {$alumno->apellido()}\n\n');
-        }
-        $borrar = Utiles::pedirInformacion("Elija el ID del alumno a borrar \n");
+        $this->verIniciales($baseDatos);
+
+        $borrar = Utiles::pedirInformacion("Elija el ID del alumno a borrar");
         $baseDatos->borrar($borrar);
         // return de erroresBA
         $errores = $baseDatos->getErroresBA();
@@ -133,10 +138,7 @@ class Menu {
 
 
     private function modificarDatos(IDatos $baseDatos, &$errores){
-        foreach($baseDatos as $alumno){
-            Utiles::informarUsuario("ID: {$alumno->id()}\n");
-            Utiles::informarUsuario("Apellido: {$alumno->apellido()}\n\n");
-        }
+        $this->verIniciales($baseDatos);
 
         $clave = Utiles::pedirInformacion("Indique ID del alumno a modificar:");
         $alumnoViejo = $baseDatos->buscarPorClave($clave);

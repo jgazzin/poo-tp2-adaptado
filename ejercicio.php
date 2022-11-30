@@ -19,7 +19,15 @@ class Ejercicio {
             $opcion = Utiles::pedirInformacion('Elija una opción');
             Utiles::informarUsuario("usted eligió $opcion".PHP_EOL);
             $errores = [];
-            $this->baseEjercicio = $this->menu->ejecutarAccion($opcion, $this->baseEjercicio, $errores);        
+            // no vuelve queda en menu
+            $this->menu->ejecutarAccion($opcion, $this->baseEjercicio, $errores);    
+
+            if(count($errores)>0){
+                echo ("Ocurrieron los siguientes errores: ".PHP_EOL);
+                foreach($errores as $error){
+                    echo($error.PHP_EOL);
+                }
+            }    
 
         }while($opcion!=="S");
     }

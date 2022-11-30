@@ -26,8 +26,9 @@ class BaseArray implements IDatos{
         $this->erroresBA = [];
     }
 
+
     public function borrar($clave){
-        if($this->buscarPorClave($clave)==null) {
+        if($this->buscarPorClave($clave)===null) {
             $this->erroresBA = ['Clave no existe'];
             return;
         } else {
@@ -38,8 +39,9 @@ class BaseArray implements IDatos{
         }
     }
     
-    public function buscarPorApellido($apellido){
+    public function buscarPorApellido($apellido=""){
         $resultado = [];
+
         foreach($this->baseArray as $alumno){
             if(empty($apellido) || $alumno->getApellido() === $apellido){
                 $resultado[] = $alumno;
@@ -58,11 +60,11 @@ class BaseArray implements IDatos{
         return null;
     }
 
-    public function reemplazar($clave, $elementoNuevo){
+    public function reemplazar($clave, $alumnoNuevo){
         $alumnoModificar = $this->buscarPorClave($clave);
         $baseActualizada = $this->borrar($clave);
-        $this->insertar($nuevoElemento, $clave);
-        return $this->baseDatos;
+        $this->insertar($alumnoNuevo, $clave);
+        return $this->baseArray;
     }
 
     public function getErroresBA(){

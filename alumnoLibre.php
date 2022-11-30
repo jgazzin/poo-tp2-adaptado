@@ -3,9 +3,8 @@ require_once "./alumno.php";
 
 class AlumnoLibre extends Alumno {
 
-    public function __construct($pApellido, $pMateria, $pNota, $i) {
-        parent::__construct ($pApellido, $pMateria, $pNota, $i);
-        $this->id = "AL{$this->apellido}-{$i}";
+    public function __construct($i, $pApellido, $pMateria, $pNota) {
+        parent::__construct ($i, $pApellido, $pMateria, $pNota);
         // $this->aprobo(); 
         parent::validar();
     }

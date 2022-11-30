@@ -53,25 +53,24 @@ class Menu {
     private function listarDatos($datosEjercicio){
         // pedir el apellido a buscar
         foreach($datosEjercicio as $alumno){
-            Utiles::informarUsuario("ID: {$alumno->id()}\n");
-            Utiles::informarUsuario("Apellido: {$alumno->apellido()}\n\n");
+            Utiles::informarUsuario("ID: {$alumno->getId()}\n");
+            Utiles::informarUsuario("Apellido: {$alumno->getApellido()}\n\n");
         }
         $mostrar = Utiles::pedirInformacion("Apellido del alumno:");
 
         foreach($datosEjercicio as $alumno){
-            if ($mostrar == $alumno->apellido() || empty($mostrar)){
+            if ($mostrar == $alumno->getApellido() || empty($mostrar)){
                 Utiles::informarUsuario($alumno->imprimirDatos());
             } 
         }
     }
-
 
     private function cargarDatos($datosEjercicio, &$errores){
 
         $nuevoAlumno = $this->pedirDatosAlumno();
         // contando los errores puedo saber si es válido
         if(count($nuevoAlumno->getErrores())===0){
-            $datosEjercicio[$nuevoAlumno->id()] = $nuevoAlumno;
+            $datosEjercicio[$nuevoAlumno->getId()] = $nuevoAlumno;
         } else {
             // si hubo un error, lo paso al que me invocó para que lo trate
             // de la manera que considere
@@ -92,9 +91,9 @@ class Menu {
         $i=time(); // time crea un número muy grande, que no se va a repetir
         if($esRegular=="S"){
             $anioRegularidad = Utiles::pedirInformacion("Anio de regularización:");
-            $nuevoAlumno = new AlumnoRegular($apellido, $materia, $nota, $anioRegularidad, $i);
+            $nuevoAlumno = new AlumnoRegular($i, $apellido, $materia, $nota, $anioRegularidad);
         }else{
-            $nuevoAlumno = new AlumnoLibre($apellido, $materia, $nota, $i);
+            $nuevoAlumno = new AlumnoLibre($i, $apellido, $materia, $nota);
         }
         return $nuevoAlumno;
 
@@ -110,7 +109,10 @@ class Menu {
         if(array_key_exists($borrar, $datosEjercicio)){
             echo "Borrar: " . $borrar ."\n";
             unset($datosEjercicio[$borrar]);
-            Utiles::verDatos($datosEjercicio);   
+            foreach($datosEjercicio as $alumno){
+                Utiles::informarUsuario('ID: {$alumno->id()}\n');
+                Utiles::informarUsuario('Apellido: {$alumno->apellido()}\n\n');
+            }   
         } else {
             $errores[] = "ID inexistente".PHP_EOL;
         }
@@ -124,7 +126,7 @@ class Menu {
             Utiles::informarUsuario("ID: {$alumno->id()}\n");
             Utiles::informarUsuario("Apellido: {$alumno->apellido()}\n\n");
         }
-        
+
         $modificar = Utiles::pedirInformacion("Indique ID del alumno a modificar:");
         if(array_key_exists($modificar, $datosEjercicio)){
             $alumnoModificado = $this->pedirDatosAlumno();

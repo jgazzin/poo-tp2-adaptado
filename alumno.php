@@ -8,10 +8,11 @@ abstract class Alumno {
     // protected $aprobo;
     protected $errores = [];
 
-    public function __construct($pApellido, $pMateria, $pNota) {
+    public function __construct($id, $pApellido, $pMateria, $pNota) {
         $this->apellido = $pApellido;
         $this->materia = $pMateria;
         $this->nota = $pNota;
+        $this->id = $id;
     }
 
     public function materia(){
@@ -21,10 +22,10 @@ abstract class Alumno {
     public function getErrores(){
         return $this->errores;
     }
-    public function apellido(){
+    public function getApellido(){
         return $this->apellido;
     }
-    public function id(){
+    public function getId(){
         return $this->id;
     }
     public function setId($valor){

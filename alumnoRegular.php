@@ -5,10 +5,9 @@ class AlumnoRegular extends Alumno {
 
     protected $anioRegularidad;
 
-    public function __construct($pApellido, $pMateria, $pNota, $pAnioRegularidad, $i) {
+    public function __construct($i, $pApellido, $pMateria, $pNota, $pAnioRegularidad) {
 
-        parent::__construct($pApellido, $pMateria, $pNota, $i);
-        $this->id = "AR{$this->apellido}-{$i}";
+        parent::__construct($i, $pApellido, $pMateria, $pNota);
         $this->anioRegularidad = $pAnioRegularidad;
         // $this->aprobo();
         $this->validar();

@@ -15,15 +15,20 @@ class Ejercicio {
 
     public function demo(){
     // DEMO control del programa
-    $alDemo1= new alumnoRegular ("AR1", "POO", "7", "2022",0);
-    $alDemo2= new alumnoLibre ("AL2", "BD", "4",1);
-    $alDemo3= new alumnoLibre ("AL3", "BD", "2",2);
-    $alDemo4= new alumnoRegular ("AR4", "POO", "3", "2022",3);
+    $pk1 = time();
+    $alDemo1= new alumnoRegular ($pk1,"APE1", "POO", 7, 2022);
+    $pk2= time()+1;
+    $alDemo2= new alumnoLibre ($pk2,"APE2", "BD", 5);
+    $pk3= time()+2;
+    $alDemo3= new alumnoLibre ($pk3,"APE3", "BD", 6);
+    $pk4= time()+3;
+    $alDemo4= new alumnoRegular ($pk4,"APE4", "POO", 8, 2021);
     $this->datosEjercicio = [
-        "ARAL1-0"=>$alDemo1,
-        "ALAL2-1"=>$alDemo2,
-        "ALAL3-2"=>$alDemo3,
-        "ARAL4-3"=>$alDemo4];
+        $pk1=>$alDemo1,
+        $pk2=>$alDemo2,
+        $pk3=>$alDemo3,
+        $pk4=>$alDemo4
+    ];
     }
 
     public function iniciarEjercicio(){

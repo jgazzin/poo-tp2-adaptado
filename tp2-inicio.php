@@ -1,49 +1,31 @@
 <?php
 require_once "./alumnoRegular.php";
 require_once "./alumnoLibre.php";
+
+require_once "./baseArray.php";
+
 require_once "./utiles.php";
 require_once "./menu.php";
+require_once "./ejercicio.php";
 
-class Ejercicio {
-    private $menu;
-    private $datosEjercicio = [];
+// DEMO control del programa
+$pk1 = time();
+$alDemo1= new alumnoRegular ($pk1,"APE1", "POO", 7, 2022);
+$pk2= time()+1;
+$alDemo2= new alumnoLibre ($pk2,"APE2", "BD", 5);
+$pk3= time()+2;
+$alDemo3= new alumnoLibre ($pk3,"APE3", "BD", 6);
+$pk4= time()+3;
+$alDemo4= new alumnoRegular ($pk4,"APE4", "POO", 8, 2021);
+$arrayObjetos = [
+    $pk1=>$alDemo1,
+    $pk2=>$alDemo2,
+    $pk3=>$alDemo3,
+    $pk4=>$alDemo4
+];
 
-    public function __construct(){
-        $this->menu = new Menu();
-        $this->demo();
-    }
+var_dump($arrayObjetos);
 
-    public function demo(){
-    // DEMO control del programa
-    $pk1 = time();
-    $alDemo1= new alumnoRegular ($pk1,"APE1", "POO", 7, 2022);
-    $pk2= time()+1;
-    $alDemo2= new alumnoLibre ($pk2,"APE2", "BD", 5);
-    $pk3= time()+2;
-    $alDemo3= new alumnoLibre ($pk3,"APE3", "BD", 6);
-    $pk4= time()+3;
-    $alDemo4= new alumnoRegular ($pk4,"APE4", "POO", 8, 2021);
-    $this->datosEjercicio = [
-        $pk1=>$alDemo1,
-        $pk2=>$alDemo2,
-        $pk3=>$alDemo3,
-        $pk4=>$alDemo4
-    ];
-    }
-
-    public function iniciarEjercicio(){
-        do {
-            $this->menu->presentarOpciones();
-            $opcion = Utiles::pedirInformacion('Elija una opción');
-            echo "usted eligió $opcion".PHP_EOL;
-            $errores = [];
-            $this->datosEjercicio = $this->menu->ejecutarAccion($opcion, $this->datosEjercicio, $errores);        
-            // al final de la ejecución, deberia verificar y/o listar los errores
-            // puede ser otro método o un foreach
-            // var_dump($errores);
-        }while($opcion!=="S");
-    }
-}
-
-$ejercicio = new Ejercicio();
+$baseArray = new BaseArray($arrayObjetos);
+$ejercicio = new Ejercicio($baseArray);
 $ejercicio->iniciarEjercicio();

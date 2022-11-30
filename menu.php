@@ -1,8 +1,11 @@
 <?php
 require_once "./utiles.php";
+
 require_once "./alumnoLibre.php";
 require_once "./alumnoRegular.php";
 
+require_once "./interfaceDatos.php";
+require_once "./baseArray.php";
 
 class Menu {
     private $opciones = [
@@ -16,135 +19,146 @@ class Menu {
     }
 
     public function presentarOpciones(){
+        // $opcion = $key
+        // $mensaje => $value
         foreach($this->opciones as $opcion=>$mensaje){
-            echo "$opcion - $mensaje".PHP_EOL;
+            Utiles::informarUsuario("$opcion - $mensaje".PHP_EOL);
         }
     }
 
-    public function ejecutarAccion($opcion, $datosEjercicio, &$errores){
-        $nuevoDatosEjercicio = $datosEjercicio;
+    public function ejecutarAccion($opcion, IDatos $baseDatos, &$errores){
 
         switch($opcion){
             // A- cargar datos
             case "A":
-                echo "Usted eligio Carga de Datos \n";
-                $nuevoDatosEjercicio = $this->cargarDatos($nuevoDatosEjercicio, $errores);
+                Utiles::informarUsuario("Usted eligio Carga de Datos \n");
+                $this->cargarDatos($baseDatos, $errores);
                 break;
 
             // B - borrar datos
             case "B":
-                echo "Usted eligio Borrar Datos \n";
-                $nuevoDatosEjercicio = $this->borrarDatos($nuevoDatosEjercicio, $errores);
+                Utiles::informarUsuario("Usted eligio Borrar Datos \n");
+                $this->borrarDatos($baseDatos, $errores);
                 break;   
             
             // M - modificar datos
             case "M":
-                echo "Usted eligió Modificar Datos\n";
-                $nuevoDatosEjercicio = $this->modificarDatos($nuevoDatosEjercicio, $errores);
+                Utiles::informarUsuario("Usted eligió Modificar Datos\n");
+                $this->modificarDatos($baseDatos, $errores);
                 break;
+
+            // L - modificar datos   
             case "L":
                 echo "Ejecutando LISTAR DATOS".PHP_EOL; 
-                $this->listarDatos($datosEjercicio);
+                $this->listarDatos($baseDatos);
+                break;
+
+            // S - Salir   
+            case "S":
+                Utiles::informarUsuario("SALIR DEL PROGRAMA".PHP_EOL); 
+                break;
+            
+            default:
+                Utiles::informarUsuario ("Opción no válida".PHP_EOL);
                 break;
         }
-        return $nuevoDatosEjercicio;
     }
 
-    private function listarDatos($datosEjercicio){
-        // pedir el apellido a buscar
-        foreach($datosEjercicio as $alumno){
-            Utiles::informarUsuario("ID: {$alumno->getId()}\n");
-            Utiles::informarUsuario("Apellido: {$alumno->getApellido()}\n\n");
-        }
-        $mostrar = Utiles::pedirInformacion("Apellido del alumno:");
+    private function listarDatos(IDatos $baseDatos){
+        $mostrar = Utiles::pedirInformacion('Ingrese un apellido o presione ENTER para todos', false);
 
-        foreach($datosEjercicio as $alumno){
-            if ($mostrar == $alumno->getApellido() || empty($mostrar)){
-                Utiles::informarUsuario($alumno->imprimirDatos());
-            } 
+        // busco alumno por apellido o todos si mostrar = vacío
+        $resultado =  $baseDatos->buscarPorApellido($mostrar);
+        foreach($resultado as $alumno){
+            Utiles::informarUsuario($alumno->imprimirDatos());
+
         }
+
     }
 
-    private function cargarDatos($datosEjercicio, &$errores){
+    private function cargarDatos(IDatos $baseDatos, &$errores){
 
         $nuevoAlumno = $this->pedirDatosAlumno();
         // contando los errores puedo saber si es válido
         if(count($nuevoAlumno->getErrores())===0){
-            $datosEjercicio[$nuevoAlumno->getId()] = $nuevoAlumno;
+            // implementa metodo de la interface (Objeto de pedir datos + clave o nada)
+            $baseDatos->insertar($nuevoAlumno, $cave=null);
+
         } else {
-            // si hubo un error, lo paso al que me invocó para que lo trate
-            // de la manera que considere
+            // muestra los mensajes de error de validar()
             $errores = $nuevoAlumno->getErrores();
         }
-        var_dump($datosEjercicio);
-        return $datosEjercicio;
-
+        // no retorna nada porque guarda baseArray (en insertar)
     }
 
-    private function pedirDatosAlumno(){
-       
+    private function pedirDatosAlumno($alumno=null){
+        if($alumno===null){
+            // si alumno
+            $pk = Utiles::pedirInformacion('Ingrese la clave de identificación [Enter para una genérica]');
+            if(empty($pk)){
+                $pk = time();
+            }
+        }else {
+            // envío alumno
+            $pk = $alumno->getPk();
+        }
+
         $apellido = Utiles::pedirInformacion("Ingrese apellido del alumno:");
         $materia = Utiles::pedirInformacion("materia del alumno:");
         $nota = Utiles::pedirInformacion("Ingrese la nota:");
         $esRegular = Utiles::pedirInformacion("es regular la materia? S o N ");
-        // índice para el ID (para q no se repitan Id si no se graba nombre)
-        $i=time(); // time crea un número muy grande, que no se va a repetir
+
         if($esRegular=="S"){
             $anioRegularidad = Utiles::pedirInformacion("Anio de regularización:");
-            $nuevoAlumno = new AlumnoRegular($i, $apellido, $materia, $nota, $anioRegularidad);
+            $nuevoAlumno = new AlumnoRegular($pk, $apellido, $materia, $nota, $anioRegularidad);
         }else{
-            $nuevoAlumno = new AlumnoLibre($i, $apellido, $materia, $nota);
+            $nuevoAlumno = new AlumnoLibre($pk, $apellido, $materia, $nota);
         }
+        // Objeto
         return $nuevoAlumno;
-
     }
 
 
-    private function borrarDatos($datosEjercicio, &$errores){
-        foreach($datosEjercicio as $alumno){
+    private function borrarDatos(IDatos $baseDatos, &$errores){
+        foreach($baseDatos as $alumno){
             Utiles::informarUsuario('ID: {$alumno->id()}\n');
             Utiles::informarUsuario('Apellido: {$alumno->apellido()}\n\n');
         }
         $borrar = Utiles::pedirInformacion("Elija el ID del alumno a borrar \n");
-        if(array_key_exists($borrar, $datosEjercicio)){
-            echo "Borrar: " . $borrar ."\n";
-            unset($datosEjercicio[$borrar]);
-            foreach($datosEjercicio as $alumno){
-                Utiles::informarUsuario('ID: {$alumno->id()}\n');
-                Utiles::informarUsuario('Apellido: {$alumno->apellido()}\n\n');
-            }   
-        } else {
-            $errores[] = "ID inexistente".PHP_EOL;
-        }
-        return $datosEjercicio;
+        $baseDatos->borrar($borrar);
+        // return de erroresBA
+        $errores = $baseDatos->getErroresBA();
+        
     }
 
 
-    private function modificarDatos($datosEjercicio, &$errores){
-
-        foreach($datosEjercicio as $alumno){
+    private function modificarDatos(IDatos $baseDatos, &$errores){
+        foreach($baseDatos as $alumno){
             Utiles::informarUsuario("ID: {$alumno->id()}\n");
             Utiles::informarUsuario("Apellido: {$alumno->apellido()}\n\n");
         }
 
-        $modificar = Utiles::pedirInformacion("Indique ID del alumno a modificar:");
-        if(array_key_exists($modificar, $datosEjercicio)){
-            $alumnoModificado = $this->pedirDatosAlumno();
-            // fix para preservar el id anterior como clave de asociación, coordinado
-            // con el id del objeto
-            $alumnoModificado->setID($modificar);
-            if(count($alumnoModificado->getErrores())===0){
-                $datosEjercicio[$modificar] = $alumnoModificado;
-            }else{
-                // si los datos del nuevo alumno están mal devuelvo los errores
-                $errores = $alumnoModificado->getErrores();
-            }
-        } else {
-            $errores[] = "ID inexistente".PHP_EOL;
-        }        
+        $clave = Utiles::pedirInformacion("Indique ID del alumno a modificar:");
+        $alumnoViejo = $baseDatos->buscarPorClave($clave);
 
-        return $datosEjercicio;
+        if($alumnoViejo===null){
+            // si buscarPorClave retorna null llama a erroresBA
+            $errores = $baseDatos->getErroresBA();
+            return;
+        }
+        // else - manda alumno viejo para recuperar pk + datos nuevos
+        $alumnoNuevo = $this->pedirDatosAlumno($alumnoViejo);
+        // devuelve objeto
 
+        // varifica errores surgidos en validar (en constructor)
+        if(count($alumnoNuevo->getErrores())>0) {
+            $errores = $alumnoNuevo->getErrores();
+            return;
+        }
+        // si todo ok llamo al metodo reemplazar de la interface
+        $baseDatos->reemplazar($clave, $alumnoNuevo);
+        // trae errores de baseArray para devolver a ejercicio
+        $errores = $baseDatos->getErroresBA();
     }
 
 }
